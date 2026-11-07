@@ -1,0 +1,23 @@
+{
+  "name": "primary",
+  "version": "1.0.0",
+  "description": "Static prank landing page. `index.html` at root, no build step. Deploy to Vercel as a plain static project (framework: Other, no build command).",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/anguswilliams93/shit-carpark.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/anguswilliams93/shit-carpark/issues"
+  },
+  "homepage": "https://github.com/anguswilliams93/shit-carpark#readme",
+  "dependencies": {
+    "@vercel/analytics": "^2.0.1"
+  }
+}
