@@ -119,7 +119,7 @@ draw();
 
 let s=300;setInterval(()=>{s=Math.max(0,s-1);document.getElementById('t').textContent=String(Math.floor(s/60)).padStart(2,'0')+":"+String(s%60).padStart(2,'0')},1000);
 
-const names=["Sammy Z.","Jack H.","Will C.","Max E.","Rachel W.","Mitch W."];
+const names=["Sammy Z.","Jack H.","Will C.","Max E.","Rachel B.","Mitch W."];
 document.getElementById('tick').innerHTML=[0,1,2,3].map(i=>`<span>🎉 ${names[(i*2)%6]} just won ${prizes[(i*3)%N].t}</span>`).join('');
 
 const btn=document.getElementById('spin');let spun=false;
