@@ -173,7 +173,7 @@ btn.onclick=()=>{
   burst();document.getElementById('prizeName').textContent=prizes[win].t;
   document.getElementById('m1').classList.add('show');
   requestAnimationFrame(()=>document.getElementById('bar').style.width="92%");
-  const st=document.getElementById('status'),msgs=["Checking ticket…","Confirming prize…","Checking vehicle location…","Hmm…"];
+  const st=document.getElementById('status'),msgs=["Checking ticket…","Confirming prize…","Checking vehicle location…","Oops…"];
   msgs.forEach((m,i)=>setTimeout(()=>st.textContent=m,i*650));
   setTimeout(()=>{document.getElementById('m1').classList.remove('show');document.getElementById('m2').classList.add('show');navigator.vibrate&&navigator.vibrate([80,40,80])},2900);
  };
