@@ -2,14 +2,16 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Spin to Win</title>
 <meta name="description" content="Spin the wheel to claim your prize.">
 <style>
 :root{--bg:#ffffff;--panel:#d3e7f3;--rule:#b9d7ea;--ink:#2b2f33;--muted:#6b7075}
 *{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%}
-body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);min-height:100%;display:flex;flex-direction:column;align-items:center;padding:16px;overflow-x:hidden}
+html,body{height:100%;overflow:hidden;overscroll-behavior:none}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--ink);height:100vh;height:100dvh;display:grid;place-items:center;padding:max(10px,env(safe-area-inset-top)) max(12px,env(safe-area-inset-right)) max(16px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left))}
+.game{width:min(100%,400px);height:100%;min-height:0;display:grid;grid-template-rows:auto auto minmax(0,1fr) auto;justify-items:center;gap:clamp(8px,1.5dvh,14px)}
+.wheel-space{width:100%;min-height:0;container-type:size;display:grid;place-items:center;padding:8px}
 .top{color:var(--ink);background:var(--panel);border:1px solid var(--rule);border-radius:14px;padding:18px;width:min(100%,400px);text-align:center;margin:12px 0 8px}
 .top .tag{display:inline-block;background:var(--bg);border:1px solid var(--rule);padding:4px 12px;border-radius:999px;font-size:12px;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
 .top h1{font-size:30px;line-height:1.1;margin-top:10px}
@@ -20,17 +22,20 @@ body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Ar
 .pointer{position:absolute;top:-6px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:16px solid transparent;border-right:16px solid transparent;border-top:34px solid var(--ink);z-index:3;filter:drop-shadow(0 3px 2px rgba(43,47,51,.35))}
 .ring{position:absolute;inset:0;border-radius:50%;background:#ffffff;box-shadow:0 10px 30px rgba(43,47,51,.35)}
 .ring::after{content:"";position:absolute;inset:8px;border-radius:50%;border:4px dotted var(--rule)}
-canvas{position:absolute;inset:16px;width:calc(100% - 32px);height:calc(100% - 32px);border-radius:50%;transition:transform 5.2s cubic-bezier(.12,.74,.14,1)}
+canvas{position:absolute;inset:16px;width:calc(100% - 32px);height:calc(100% - 32px);border-radius:50%;transition:transform 14s cubic-bezier(.25,.75,.5,1)}
 .hub{position:absolute;top:50%;left:50%;width:64px;height:64px;transform:translate(-50%,-50%);border-radius:50%;background:var(--rule);border:4px solid #ffffff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:14px;z-index:2;box-shadow:0 4px 10px rgba(43,47,51,.3)}
-.btn{margin-top:14px;width:min(88vw,340px);padding:16px;border:0;border-radius:14px;background:var(--panel);color:var(--ink);font-size:20px;font-weight:900;letter-spacing:.5px;box-shadow:0 6px 0 var(--rule),0 10px 20px rgba(43,47,51,.25);cursor:pointer;animation:pulse 1.4s infinite}
-.btn:active{transform:translateY(4px);box-shadow:0 2px 0 var(--rule)}
-.btn:disabled{animation:none;opacity:.7;cursor:default}
+.btn{--button-shadow:#166534;margin-top:14px;width:min(88vw,340px);padding:16px;border:0;border-radius:14px;background:#15803d;color:#ffffff;font-size:20px;font-weight:900;letter-spacing:.5px;box-shadow:0 6px 0 var(--button-shadow),0 10px 20px rgba(43,47,51,.25);cursor:pointer;animation:pulse 1.4s infinite}
+.btn:active{transform:translateY(4px);box-shadow:0 2px 0 var(--button-shadow)}
+.btn:disabled{--button-shadow:#991b1b;background:#b91c1c;animation:none;cursor:default}
 @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.04)}}
 .fine{color:var(--ink);font-size:11px;margin-top:12px;text-align:center}
-.winners{width:min(88vw,340px);margin-top:14px;background:var(--panel);border:1px solid var(--rule);border-radius:12px;padding:10px 12px;color:var(--ink);font-size:13px;overflow:hidden;height:38px;position:relative}
-.winners div{position:absolute;left:12px;right:12px;animation:ticker 9s linear infinite}
-.winners div span{display:block;height:18px;line-height:18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-@keyframes ticker{0%{transform:translateY(10px)}33%{transform:translateY(-8px)}66%{transform:translateY(-26px)}100%{transform:translateY(-44px)}}
+.winners{width:min(88vw,340px);flex-shrink:0;margin-top:14px;background:var(--panel);border:1px solid var(--rule);border-radius:12px;padding:10px 0;color:var(--ink);font-size:13px;overflow:hidden}
+.winners-track{display:flex;width:max-content;animation:ticker 24s linear infinite}
+.winners-group{display:flex;flex-shrink:0}
+.winners-group span{display:block;padding-right:32px;line-height:18px;white-space:nowrap}
+.winners:hover .winners-track{animation-play-state:paused}
+@keyframes ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media(prefers-reduced-motion:reduce){.winners{overflow-x:auto}.winners-track{animation:none}.winners-group[aria-hidden="true"]{display:none}}
 .modal{position:fixed;inset:0;background:rgba(43,47,51,.6);display:none;align-items:center;justify-content:center;padding:20px;z-index:10}
 .modal.show{display:flex}
 .card{background:var(--panel);border:1px solid var(--rule);border-radius:18px;padding:26px 22px;max-width:360px;width:100%;text-align:center;animation:pop .35s cubic-bezier(.2,1.4,.4,1)}
@@ -47,26 +52,57 @@ canvas{position:absolute;inset:16px;width:calc(100% - 32px);height:calc(100% - 3
 .confetti{position:fixed;inset:0;pointer-events:none;z-index:9}
 .confetti i{position:absolute;top:-10px;width:8px;height:14px;animation:fall linear forwards}
 @keyframes fall{to{transform:translateY(110vh) rotate(720deg)}}
+/* Reserve room for the copy and controls; scale the wheel into the remaining space. */
+.game .top{width:100%;margin:0;padding:clamp(8px,2dvh,18px)}
+.game .top h1{font-size:clamp(22px,4dvh,30px);margin-top:clamp(4px,1dvh,10px)}
+.game .top p{font-size:clamp(12px,2dvh,14px);margin-top:4px}
+.game .timer{margin-top:6px;padding:4px 10px}
+.game .winners{width:100%;margin:0;padding:6px 0}
+.game .wheel-wrap{width:min(100cqw,100cqh,340px);margin:0;flex-shrink:0}
+.game .hub{width:20%;height:20%;font-size:clamp(10px,4cqw,14px)}
+.game .btn{width:min(94%,340px);margin:0;padding:clamp(10px,2dvh,16px);font-size:clamp(16px,3dvh,20px)}
+.confetti{overflow:hidden}
+@media(max-height:500px) and (min-aspect-ratio:4/3){
+ .game{width:min(100%,820px);grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:auto minmax(0,1fr) auto;column-gap:20px}
+ .game .top{grid-column:1;grid-row:1/4;align-self:center}
+ .game .winners{grid-column:2;grid-row:1}
+ .game .wheel-space{grid-column:2;grid-row:2}
+ .game .btn{grid-column:2;grid-row:3}
+}
+@media(max-height:450px){
+ .modal{padding:10px}
+ .card{padding:12px 16px}
+ .card .icon{font-size:28px;margin-bottom:4px}
+ .card h2{font-size:20px;margin-bottom:4px}
+ .card .prize{font-size:22px;margin:4px 0}
+ .card p{font-size:14px;line-height:1.3}
+ .card button{margin-top:10px;padding:10px 16px}
+}
 </style>
 </head>
 <body>
+<main class="game">
 <div class="top">
-  <span class="tag">Exclusive winner</span>
+  <span class="tag">Winner</span>
   <h1>Congratulations!<br><span>Spin to claim</span></h1>
-  <p>Your ticket number has been selected. Not everyone is a winner.</p>
+  <p>Your ticket number has been selected.</p>
+  <p>Not everyone has this opportunity.</p>
   <div class="timer">⏱ Offer expires in <b id="t">05:00</b></div>
 </div>
 
+<div class="winners" aria-label="Recent winners"><div class="winners-track" id="tick"></div></div>
+
+<div class="wheel-space">
 <div class="wheel-wrap">
   <div class="pointer"></div>
   <div class="ring"></div>
   <canvas id="w" width="640" height="640"></canvas>
   <div class="hub">SPIN</div>
 </div>
+</div>
 
 <button class="btn" id="spin">SPIN NOW</button>
-
-<div class="winners"><div id="tick"></div></div>
+</main>
 
 <div class="confetti" id="confetti"></div>
 
@@ -85,9 +121,9 @@ canvas{position:absolute;inset:16px;width:calc(100% - 32px);height:calc(100% - 3
   <div class="card">
     <div class="icon">⚠️</div>
     <h2>Something went wrong</h2>
-    <p>Bugger, we couldn't release your prize.</p>
-    <p style="margin-top:10px"><span class="err">Error:</span> this may be due to where you parked your car.</p>
-    <p class="small" style="margin-top:14px">Please park better and try again.</p>
+    <p>Oh no! it appears something happened on our end.</p>
+    <p></p>
+    <p style="margin-top:10px"><span class="err">Error 404:</span> this may be due to where you parked your car.</p>
     <button onclick="location.reload()">Try again</button>
   </div>
 </div>
@@ -120,22 +156,29 @@ draw();
 let s=300;setInterval(()=>{s=Math.max(0,s-1);document.getElementById('t').textContent=String(Math.floor(s/60)).padStart(2,'0')+":"+String(s%60).padStart(2,'0')},1000);
 
 const names=["Sammy Z.","Jack H.","Will C.","Max E.","Rachel B.","Mitch W."];
-document.getElementById('tick').innerHTML=[0,1,2,3].map(i=>`<span>🎉 ${names[(i*2)%6]} just won ${prizes[(i*3)%N].t}</span>`).join('');
+const winnerItems=[0,1,2,3].map(i=>`<span>🎉 ${names[(i*2)%6]} just won ${prizes[(i*3)%N].t}</span>`).join('');
+document.getElementById('tick').innerHTML=`<div class="winners-group">${winnerItems}</div><div class="winners-group" aria-hidden="true">${winnerItems}</div>`;
 
 const btn=document.getElementById('spin');let spun=false;
 btn.onclick=()=>{
  if(spun)return;spun=true;btn.disabled=true;btn.textContent="Spinning…";
- const win=Math.random()<.5?0:5;
- const target=360*6 + (360 - (win*(360/N) + (360/N)/2));
- cv.style.transform=`rotate(${target}deg)`;
- setTimeout(()=>{
+ const win=Math.floor(Math.random()*N);
+ // Land safely inside the selected slice, with a different stopping point each time.
+ const landingAngle=(win+.2+Math.random()*.6)*(360/N);
+ const target=360*10 + (360-landingAngle);
+ const finishSpin=event=>{
+  if(event.propertyName!=="transform" || event.target!==cv)return;
+  cv.removeEventListener('transitionend',finishSpin);
+  btn.textContent="Spin complete";
   burst();document.getElementById('prizeName').textContent=prizes[win].t;
   document.getElementById('m1').classList.add('show');
   requestAnimationFrame(()=>document.getElementById('bar').style.width="92%");
   const st=document.getElementById('status'),msgs=["Checking ticket…","Confirming prize…","Checking vehicle location…","Hmm…"];
   msgs.forEach((m,i)=>setTimeout(()=>st.textContent=m,i*650));
   setTimeout(()=>{document.getElementById('m1').classList.remove('show');document.getElementById('m2').classList.add('show');navigator.vibrate&&navigator.vibrate([80,40,80])},2900);
- },5400);
+ };
+ cv.addEventListener('transitionend',finishSpin);
+ cv.style.transform=`rotate(${target}deg)`;
 };
 function burst(){
  const c=document.getElementById('confetti'),cols=["#b9d7ea","#ffffff","#6b7075","#d3e7f3","#2b2f33"];
